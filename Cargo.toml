@@ -1,7 +1,7 @@
 [package]
 name = "bevy_asset_packer"
 authors = ["Dublikunt Max"]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "BSD-3-Clause"
 description = "Easy to use bevy plugin for packing resources in single file and protect him."
@@ -18,6 +18,7 @@ exclude = [
 
 [workspace]
 resolver = "2"
+members = ["example"]
 
 [profile.dev]
 opt-level = 1
@@ -25,9 +26,13 @@ opt-level = 1
 [profile.dev.package."*"]
 opt-level = 3
 
+[workspace.dependencies]
+bevy = { version = "0.11", default-features = false }
+
 [dependencies]
 bevy = { version = "0.11", default-features = false, features = ["bevy_asset"] }
 anyhow = "1.0.72"
 bs58 = "0.5.0"
 tar = "0.4.40"
 magic-crypt = "3.1.12"
+byteorder = "1.4.3"

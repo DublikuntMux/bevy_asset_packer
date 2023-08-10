@@ -6,7 +6,7 @@ Easy to use bevy plugin for packing resources in single file and protect him.
 
 - [x] Paking all assets in single file.
 - [x] Encrypt assets.
-- [ ] Compressing assets.
+- [x] Compressing assets.
 
 ## Usage
 
@@ -16,7 +16,7 @@ Add to `Cargo.toml`:
 
 ```toml
 [dependencies]
-bevy_asset_packer = "0.1.0"
+bevy_asset_packer = "0.2.0"
 ```
 
 ### System setup
@@ -28,6 +28,7 @@ fn main() {
     let mut options = AssetBundlingOptions::default();
     options.encode_file_names = true;
     options.encryption_on = true;
+    options.compress_on = true;
     options.set_encryption_key("very_secret_key".to_owned());
 
     App::new()
@@ -47,9 +48,11 @@ fn main() {
     let mut options = AssetBundlingOptions::default();
     options.encode_file_names = true;
     options.encryption_on = true;
+    options.compress_on = true;
     options.set_encryption_key("very_secret_key".to_owned());
     AssetBundler::from(options).build().unwrap();
 }
 ```
 
+You can see examle in example folder.
 And its all!!!

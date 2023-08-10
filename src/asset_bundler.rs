@@ -1,6 +1,7 @@
 use std::{
     env, fs,
-    path::{Path, PathBuf}, io::Read,
+    io::Read,
+    path::{Path, PathBuf},
 };
 
 use crate::asset_bundling_options::AssetBundlingOptions;

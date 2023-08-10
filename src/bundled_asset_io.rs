@@ -10,7 +10,7 @@ use std::{
 
 use bevy::{
     asset::{AssetIo, AssetIoError, ChangeWatcher},
-    utils::BoxedFuture
+    utils::BoxedFuture,
 };
 use tar::Archive;
 
@@ -101,10 +101,7 @@ impl AssetIo for BundledAssetIo {
         })
     }
 
-    fn read_directory(
-        &self,
-        path: &Path,
-    ) -> Result<Box<dyn Iterator<Item = PathBuf>>, AssetIoError> {
+    fn read_directory(&self, path: &Path) -> Result<Box<dyn Iterator<Item = PathBuf>>, AssetIoError> {
         if let Some(lock) = self.parent_dir_to_path_info.clone() {
             let mappings = lock.read().unwrap();
             let path_str = normalize_path(path);
@@ -116,11 +113,7 @@ impl AssetIo for BundledAssetIo {
         Err(AssetIoError::NotFound(path.to_path_buf()))
     }
 
-    fn watch_path_for_changes(
-        &self,
-        _to_watch: &Path,
-        _to_reload: Option<PathBuf>,
-    ) -> Result<(), AssetIoError> {
+    fn watch_path_for_changes(&self, _to_watch: &Path, _to_reload: Option<PathBuf>) -> Result<(), AssetIoError> {
         Ok(())
     }
 
@@ -151,10 +144,7 @@ impl AssetIo for BundledAssetIo {
 }
 
 fn map_error(err: anyhow::Error) -> AssetIoError {
-    AssetIoError::Io(std::io::Error::new(
-        std::io::ErrorKind::Other,
-        format!("{}", err),
-    ))
+    AssetIoError::Io(std::io::Error::new(std::io::ErrorKind::Other, format!("{}", err)))
 }
 
 fn normalize_path(path: &Path) -> String {
