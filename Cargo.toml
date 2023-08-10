@@ -3,6 +3,18 @@ name = "bevy_asset_packer"
 authors = ["Dublikunt Max"]
 version = "0.1.0"
 edition = "2021"
+license = "BSD 3-Clause"
+description = "Easy to use bevy plugin for packing resources in single file and protect him."
+homepage = "https://github.com/DublikuntMux/bevy_asset_packer"
+repository = "https://github.com/DublikuntMux/bevy_asset_packer"
+readme = "README.md"
+keywords = ["bevy", "asset", "assets", "asset manager", "bevy plugin"]
+categories = ["game-development", "game-engines"]
+exclude = [
+    "example/*",
+    ".github/*",
+    "rustfmt.toml"
+]
 
 [workspace]
 resolver = "2"
