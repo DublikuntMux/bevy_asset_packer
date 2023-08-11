@@ -4,6 +4,8 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use miniz_oxide::deflate::compress_to_vec;
+
 use crate::asset_bundling_options::AssetBundlingOptions;
 
 pub struct AssetBundler {
@@ -92,9 +94,36 @@ fn archive_dir_recursive(
             }
             let mut file = fs::File::open(entry_path.clone())?;
 
-            if options.is_encryption_ready() {
+            if options.compress_on {
                 let mut plain = Vec::new();
                 file.read_to_end(&mut plain)?;
+
+                let compressed = compress_to_vec(&plain, 9);
+                if options.is_encryption_ready() {
+                    if let Some(encrypted) = options.try_encrypt(&compressed)? {
+                        let mut header = tar::Header::new_gnu();
+                        header.set_path(name_in_archive)?;
+                        let metadata = fs::metadata(&entry_path)?;
+                        header.set_metadata(&metadata);
+                        header.set_size(encrypted.len() as u64);
+                        header.set_cksum();
+                        builder.append(&header, encrypted.as_slice())?;
+                        continue;
+                    }
+                } else {
+                    let mut header = tar::Header::new_gnu();
+                    header.set_path(name_in_archive)?;
+                    let metadata = fs::metadata(&entry_path)?;
+                    header.set_metadata(&metadata);
+                    header.set_size(compressed.len() as u64);
+                    header.set_cksum();
+                    builder.append(&header, compressed.as_slice())?;
+                    continue;
+                }
+            } else if options.is_encryption_ready() {
+                let mut plain = Vec::new();
+                file.read_to_end(&mut plain)?;
+
                 if let Some(encrypted) = options.try_encrypt(&plain)? {
                     let mut header = tar::Header::new_gnu();
                     header.set_path(name_in_archive)?;
@@ -106,7 +135,6 @@ fn archive_dir_recursive(
                     continue;
                 }
             }
-
             builder.append_file(name_in_archive, &mut file)?;
         }
     }

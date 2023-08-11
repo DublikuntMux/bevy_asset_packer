@@ -12,6 +12,7 @@ use bevy::{
     asset::{AssetIo, AssetIoError, ChangeWatcher},
     utils::BoxedFuture,
 };
+use miniz_oxide::inflate::decompress_to_vec;
 use tar::Archive;
 
 use crate::{asset_bundling_options::AssetBundlingOptions, path_info::ArchivePathInfo};
@@ -91,9 +92,19 @@ impl AssetIo for BundledAssetIo {
                 if entry_path.eq(&encoded_entry_path) {
                     let mut vec = Vec::new();
                     entry.read_to_end(&mut vec)?;
+
                     if let Some(decrypted) = self.options.try_decrypt(&vec).map_err(map_error)? {
+                        if self.options.compress_on {
+                            let decompressed = decompress_to_vec(&decrypted).unwrap_or_default();
+                            return Ok(decompressed);
+                        }
                         return Ok(decrypted);
                     }
+                    if self.options.compress_on {
+                        let decompressed = decompress_to_vec(&vec).unwrap_or_default();
+                        return Ok(decompressed);
+                    }
+
                     return Ok(vec);
                 }
             }

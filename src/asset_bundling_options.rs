@@ -2,8 +2,6 @@ use std::path::{Path, PathBuf};
 
 use magic_crypt::{new_magic_crypt, MagicCrypt256, MagicCryptTrait};
 
-use crate::{compress::compress, decompress::decompress};
-
 #[derive(Debug, Clone)]
 pub struct AssetBundlingOptions {
     pub encode_file_names: bool,
@@ -61,13 +59,7 @@ impl AssetBundlingOptions {
 
     fn try_encode_string(&self, s: &str) -> anyhow::Result<String> {
         if self.is_encryption_ready() {
-            let mut bytes = s.as_bytes();
-            let compressed: Vec<u8>;
-
-            if self.compress_on {
-                compressed = compress(bytes);
-                bytes = &compressed;
-            }
+            let bytes = s.as_bytes();
             if let Some(encrypted) = self.try_encrypt(bytes)? {
                 return Ok(bs58::encode(encrypted).into_string());
             }
@@ -80,10 +72,6 @@ impl AssetBundlingOptions {
         let vec = bs58::decode(s).into_vec()?;
         if self.is_encryption_ready() {
             if let Some(decrypted) = self.try_decrypt(&vec)? {
-                if self.compress_on {
-                    let decompressed = decompress(&decrypted);
-                    return Ok(String::from_utf8(decompressed.unwrap_or_default())?);
-                }
                 return Ok(String::from_utf8(decrypted)?);
             }
         }

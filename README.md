@@ -16,7 +16,7 @@ Add to `Cargo.toml`:
 
 ```toml
 [dependencies]
-bevy_asset_packer = "0.2.0"
+bevy_asset_packer = "0.3.0"
 ```
 
 ### System setup
@@ -27,7 +27,6 @@ In src/main.rs
 fn main() {
     let mut options = AssetBundlingOptions::default();
     options.encode_file_names = true;
-    options.encryption_on = true;
     options.compress_on = true;
     options.set_encryption_key("very_secret_key".to_owned());
 
@@ -47,12 +46,11 @@ In build.rs
 fn main() {
     let mut options = AssetBundlingOptions::default();
     options.encode_file_names = true;
-    options.encryption_on = true;
     options.compress_on = true;
     options.set_encryption_key("very_secret_key".to_owned());
     AssetBundler::from(options).build().unwrap();
 }
 ```
 
-You can see examle in example folder.
+You can see examle in example folder.  
 And its all!!!

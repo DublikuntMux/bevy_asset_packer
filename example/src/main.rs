@@ -1,4 +1,7 @@
-use bevy::{prelude::*, log::{LogPlugin, Level}};
+use bevy::{
+    log::{Level, LogPlugin},
+    prelude::*,
+};
 use bevy_asset_packer::{asset_bundling_options::AssetBundlingOptions, bundled_asset_plugin::BundledAssetIoPlugin};
 
 #[derive(Component)]
@@ -10,17 +13,16 @@ enum Direction {
 fn main() {
     let mut options = AssetBundlingOptions::default();
     options.encode_file_names = true;
-    options.encryption_on = true;
     options.compress_on = true;
     options.set_encryption_key("very_secret_key".to_owned());
 
     App::new()
         .add_plugins(
             DefaultPlugins
-            .set(LogPlugin {
-                level: Level::INFO,
-                ..Default::default()
-            })
+                .set(LogPlugin {
+                    level: Level::INFO,
+                    ..Default::default()
+                })
                 .build()
                 .add_before::<bevy::asset::AssetPlugin, _>(BundledAssetIoPlugin::from(options)),
         )
