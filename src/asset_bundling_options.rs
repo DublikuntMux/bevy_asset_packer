@@ -1,8 +1,11 @@
 use std::path::{Path, PathBuf};
 
-use aes::{Aes128, cipher::{generic_array::GenericArray, KeyInit}};
+use aes::{
+    cipher::{generic_array::GenericArray, KeyInit},
+    Aes128,
+};
 
-use crate::crypt::{encrypt_ctr, decrypt_ctr};
+use crate::crypt::{decrypt_ctr, encrypt_ctr};
 
 #[derive(Debug, Clone)]
 pub struct AssetBundlingOptions {

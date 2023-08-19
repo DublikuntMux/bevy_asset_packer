@@ -17,10 +17,10 @@ Add to `Cargo.toml`:
 
 ```toml
 [build-dependencies]
-bevy_asset_packer = "0.3.0"
+bevy_asset_packer = "0.4.0"
 
 [dependencies]
-bevy_asset_packer = "0.3.0"
+bevy_asset_packer = "0.4.0"
 ```
 
 ### System setup

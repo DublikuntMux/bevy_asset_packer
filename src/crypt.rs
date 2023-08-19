@@ -1,4 +1,4 @@
-use aes::{Aes128, cipher::BlockEncrypt};
+use aes::{cipher::BlockEncrypt, Aes128};
 use belt_ctr::cipher::generic_array::GenericArray;
 
 fn increment_counter(counter: &mut [u8]) {
