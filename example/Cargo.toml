@@ -15,5 +15,5 @@ opt-level = 3
 bevy_asset_packer = { path = "../" }
 
 [dependencies]
-bevy = { version = "0.11.0", workspace = true, default-features = false, features = ["multi-threaded", "bevy_asset", "bevy_winit", "bevy_render", "bevy_sprite", "png"] }
+bevy = { workspace = true, default-features = false, features = ["multi-threaded", "bevy_asset", "bevy_winit", "bevy_render", "bevy_sprite", "png"] }
 bevy_asset_packer = { path = "../" }

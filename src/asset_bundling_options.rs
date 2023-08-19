@@ -1,12 +1,14 @@
 use std::path::{Path, PathBuf};
 
-use magic_crypt::{new_magic_crypt, MagicCrypt256, MagicCryptTrait};
+use aes::{Aes128, cipher::{generic_array::GenericArray, KeyInit}};
+
+use crate::crypt::{encrypt_ctr, decrypt_ctr};
 
 #[derive(Debug, Clone)]
 pub struct AssetBundlingOptions {
     pub encode_file_names: bool,
     pub encryption_on: bool,
-    pub encryption_key: Option<String>,
+    pub encryption_key: Option<[u8; 16]>,
     pub compress_on: bool,
     pub asset_bundle_name: String,
 }
@@ -24,7 +26,7 @@ impl Default for AssetBundlingOptions {
 }
 
 impl AssetBundlingOptions {
-    pub fn set_encryption_key(&mut self, key: String) -> &mut Self {
+    pub fn set_encryption_key(&mut self, key: [u8; 16]) -> &mut Self {
         self.encryption_on = true;
         self.encryption_key = Some(key);
         self
@@ -34,10 +36,10 @@ impl AssetBundlingOptions {
         self.encryption_on && self.encryption_key.is_some()
     }
 
-    pub fn try_get_crypter_if_needed(&self) -> anyhow::Result<Option<MagicCrypt256>> {
+    pub fn try_get_crypter_if_needed(&self) -> anyhow::Result<Option<Aes128>> {
         if self.encryption_on {
             if let Some(aes_key) = &self.encryption_key {
-                return Ok(Some(new_magic_crypt!(aes_key, 256)));
+                return Ok(Some(Aes128::new(GenericArray::from_slice(aes_key))));
             }
         }
         Ok(None)
@@ -45,14 +47,14 @@ impl AssetBundlingOptions {
 
     pub fn try_encrypt(&self, plain: &[u8]) -> anyhow::Result<Option<Vec<u8>>> {
         if let Some(crypter) = self.try_get_crypter_if_needed()? {
-            return Ok(Some(crypter.encrypt_to_bytes(plain)));
+            return Ok(Some(encrypt_ctr(&crypter, plain)));
         }
         Ok(None)
     }
 
     pub fn try_decrypt(&self, encrypted: &[u8]) -> anyhow::Result<Option<Vec<u8>>> {
         if let Some(crypter) = self.try_get_crypter_if_needed()? {
-            return Ok(Some(crypter.decrypt_bytes_to_bytes(encrypted)?));
+            return Ok(Some(decrypt_ctr(&crypter, encrypted)));
         }
         Ok(None)
     }
