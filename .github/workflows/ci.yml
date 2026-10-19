@@ -1,0 +1,18 @@
+name: Rust CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --all
+      - run: cargo clippy --workspace
+      - run: cargo test --workspace
+      - run: cargo test --no-default-features -p bevy_asset_packer

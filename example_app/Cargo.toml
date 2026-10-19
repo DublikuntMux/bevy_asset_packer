@@ -1,0 +1,16 @@
+[package]
+name = "bundled_asset_example"
+version = "0.1.0"
+edition = "2024"
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow = "1"
+bevy = { version = "0.20.0", default-features = false, features = ["bevy_asset"] }
+bevy_asset_packer = { path = ".." }
+
+[build-dependencies]
+anyhow = "1"
+bevy_asset_packer = { path = "..", default-features = false }

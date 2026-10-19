@@ -1,0 +1,39 @@
+[package]
+name = "bevy_asset_packer"
+version = "0.5.0"
+edition = "2024"
+rust-version = "1.97.1"
+license = "BSD-3-Clause"
+description = "Build-time asset packing with optional compression and authenticated encryption for Bevy"
+readme = "README.md"
+keywords = ["bevy", "assets", "bundle", "compression", "encryption"]
+categories = ["game-development", "game-engines"]
+
+[workspace]
+members = ["example_app"]
+default-members = ["."]
+resolver = "3"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+
+[lints]
+workspace = true
+
+[features]
+default = ["runtime"]
+runtime = ["dep:bevy", "dep:futures-lite"]
+
+[dependencies]
+aes-gcm = "0.10"
+anyhow = "1"
+bevy = { version = "0.20.0", default-features = false, features = ["bevy_asset"], optional = true }
+flate2 = "1"
+futures-lite = { version = "2", optional = true }
+rand = "0.9"
+tar = "0.4"
+walkdir = "2"
+
+[dev-dependencies]
+tempfile = "3"
