@@ -5,9 +5,13 @@ edition = "2024"
 rust-version = "1.97.1"
 license = "BSD-3-Clause"
 description = "Build-time asset packing with optional compression and authenticated encryption for Bevy"
+repository = "https://github.com/DublikuntMux/bevy_asset_packer"
 readme = "README.md"
 keywords = ["bevy", "assets", "bundle", "compression", "encryption"]
 categories = ["game-development", "game-engines"]
+exclude = [
+    ".github/*",
+]
 
 [workspace]
 members = ["example_app"]
