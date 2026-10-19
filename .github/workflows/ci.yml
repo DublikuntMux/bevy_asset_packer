@@ -12,7 +12,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-      - run: cargo fmt --all
-      - run: cargo clippy --workspace
+          targets: wasm32-unknown-unknown
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - run: cargo clippy -p bevy_asset_packer --all-targets --no-default-features -- -D warnings
+      - run: cargo clippy --workspace --all-targets --all-features --target wasm32-unknown-unknown -- -D warnings
+      - run: cargo clippy -p bevy_asset_packer --all-targets --no-default-features --target wasm32-unknown-unknown -- -D warnings
       - run: cargo test --workspace
       - run: cargo test --no-default-features -p bevy_asset_packer

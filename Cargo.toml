@@ -26,14 +26,25 @@ default = ["runtime"]
 runtime = ["dep:bevy", "dep:futures-lite"]
 
 [dependencies]
-aes-gcm = "0.10"
+aes-gcm = { version = "0.10", default-features = false, features = ["aes", "alloc"] }
 anyhow = "1"
 bevy = { version = "0.20.0", default-features = false, features = ["bevy_asset"], optional = true }
 flate2 = "1"
 futures-lite = { version = "2", optional = true }
-rand = "0.9"
-tar = "0.4"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+blocking = "1"
+rand = "0.10"
 walkdir = "2"
 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+js-sys = "0.3"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["Headers", "ReadableStream", "RequestInit", "Response", "Window"] }
+
 [dev-dependencies]
+futures-lite = "2"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 tempfile = "3"

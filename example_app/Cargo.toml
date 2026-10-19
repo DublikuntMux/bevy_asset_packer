@@ -11,6 +11,12 @@ anyhow = "1"
 bevy = { version = "0.20.0", default-features = false, features = ["bevy_asset"] }
 bevy_asset_packer = { path = ".." }
 
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+futures-lite = "2"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen-futures = "0.4"
+
 [build-dependencies]
 anyhow = "1"
 bevy_asset_packer = { path = "..", default-features = false }

@@ -4,9 +4,7 @@ use std::{
     sync::Arc,
 };
 
-use bevy::asset::io::{
-    AssetReader, AssetReaderError, AssetReaderFuture, PathStream, Reader, SliceReader,
-};
+use bevy::asset::io::{AssetReader, AssetReaderError, PathStream, Reader, VecReader};
 use futures_lite::stream;
 
 use crate::AssetBundle;
@@ -22,30 +20,27 @@ impl BundledAssetReader {
         Self { bundle }
     }
 
-    fn read_path<'a>(&'a self, path: &'a Path) -> Result<SliceReader<'a>, AssetReaderError> {
+    async fn read_path(&self, path: &Path) -> Result<VecReader, AssetReaderError> {
         let bytes = self
             .bundle
-            .get(path)
+            .read(path)
+            .await
+            .map_err(|error| std::io::Error::other(format!("{error:#}")))?
             .ok_or_else(|| AssetReaderError::NotFound(path.to_path_buf()))?;
-        Ok(SliceReader::new(bytes))
+        Ok(VecReader::new(bytes))
     }
 }
 
 impl AssetReader for BundledAssetReader {
-    fn read<'a>(&'a self, path: &'a Path) -> impl AssetReaderFuture<Value: Reader + 'a> {
-        ready(self.read_path(path))
+    async fn read<'a>(&'a self, path: &'a Path) -> Result<impl Reader + 'a, AssetReaderError> {
+        self.read_path(path).await
     }
 
-    fn read_meta<'a>(&'a self, path: &'a Path) -> impl AssetReaderFuture<Value: Reader + 'a> {
+    async fn read_meta<'a>(&'a self, path: &'a Path) -> Result<impl Reader + 'a, AssetReaderError> {
         let mut meta_name = path.as_os_str().to_os_string();
         meta_name.push(".meta");
         let meta_path = PathBuf::from(meta_name);
-        ready(
-            self.bundle
-                .get(&meta_path)
-                .map(SliceReader::new)
-                .ok_or(AssetReaderError::NotFound(meta_path)),
-        )
+        self.read_path(&meta_path).await
     }
 
     fn read_directory<'a>(

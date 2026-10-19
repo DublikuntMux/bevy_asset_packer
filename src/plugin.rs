@@ -10,7 +10,10 @@ use bevy::{
 
 use crate::{AssetBundle, BundledAssetReader};
 
-/// Replaces the *default* asset source with an immutable in-memory bundle.
+/// Replaces the *default* asset source with an indexed bundle.
+///
+/// Assets are read and decoded on demand from the bundle source. The plugin
+/// retains the index, without retaining a cache of decoded asset bytes.
 ///
 /// Add this plugin before `AssetPlugin` or `DefaultPlugins`. Bevy asset sources
 /// are finalized while `AssetPlugin` initializes, so registering later is too late.

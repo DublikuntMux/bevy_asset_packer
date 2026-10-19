@@ -1,11 +1,12 @@
-/// Build options for the custom v1 archive format.
+/// Build options for the indexed v2 archive format.
 ///
-/// When an encryption key is supplied, the entire compressed TAR stream,
-/// including filenames, is protected with AES-128-GCM. The key must also be
-/// supplied to [`crate::AssetBundle::from_bytes`] when loading.
+/// Files are compressed independently and loaded on demand. When a key is
+/// supplied, the index (including filenames) and each file are independently
+/// authenticated with AES-128-GCM. Supply the same key when opening the bundle.
 #[derive(Clone)]
 pub struct AssetBundlingOptions {
-    /// Deflate-compress the TAR payload before encryption (enabled by default).
+    /// Try zlib/DEFLATE for each file, keeping compression only when it saves space.
+    /// Enabled by default; compression happens before encryption.
     pub compress: bool,
     /// AES-128-GCM key. A key embedded in the game binary is not secret.
     pub encryption_key: Option<[u8; 16]>,
